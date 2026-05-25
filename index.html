@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Habit Rules - Bộ luật thói quen</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #17202a;
+      --muted: #687385;
+      --line: #e6e9ef;
+      --good: #18a058;
+      --bad: #d03050;
+      --neutral: #8a63d2;
+      --warn: #f0a020;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #f6f7fb 0%, #eef3ff 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .app {
+      width: min(1120px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 50px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 18px;
+      align-items: stretch;
+      margin-bottom: 18px;
+    }
+
+    .hero, .panel {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero { padding: 24px; }
+    .panel { padding: 18px; }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.05;
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .today {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .date {
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .progress-wrap {
+      height: 12px;
+      background: #edf0f6;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid #dfe4ec;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #18a058, #62c370);
+      transition: width 0.25s ease;
+    }
+
+    .progress-text {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 18px 0;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    .tab, .btn {
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: 0.18s ease;
+      font-weight: 700;
+    }
+
+    .tab:hover, .btn:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(15,23,42,0.08); }
+    .tab.active { background: #17202a; color: white; border-color: #17202a; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      grid-column: span 6;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .card.full { grid-column: 1 / -1; }
+    .card.third { grid-column: span 4; }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: -0.3px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-weight: 800;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .pill.good { color: #0b7a3b; background: #e8f7ee; border-color: #ccebd8; }
+    .pill.bad { color: #a10f2b; background: #fff0f3; border-color: #ffd3dc; }
+    .pill.neutral { color: #5d33a0; background: #f3edff; border-color: #e3d7fb; }
+    .pill.warn { color: #8a5600; background: #fff7df; border-color: #ffe8a3; }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .item.done {
+      background: #f1fbf5;
+      border-color: #ccebd8;
+    }
+
+    .item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--good);
+    }
+
+    .item-title { font-weight: 800; }
+    .item-sub { color: var(--muted); font-size: 13px; margin-top: 2px; line-height: 1.35; }
+
+    .time {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      background: #f3f5f9;
+      border-radius: 999px;
+      padding: 5px 8px;
+    }
+
+    .rule {
+      padding: 12px;
+      background: #fbfcff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      line-height: 1.55;
+    }
+
+    .rule strong { color: #111827; }
+
+    .rule + .rule { margin-top: 9px; }
+
+    .quote {
+      padding: 16px;
+      background: #17202a;
+      color: white;
+      border-radius: 16px;
+      line-height: 1.6;
+      font-weight: 750;
+    }
+
+    .quote small { display: block; margin-top: 8px; color: #cbd5e1; font-weight: 600; }
+
+    .form {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: white;
+      outline: none;
+    }
+
+    input:focus, select:focus { border-color: #8aa7ff; box-shadow: 0 0 0 3px rgba(92,124,250,0.12); }
+
+    .btn.primary { background: #17202a; color: white; border-color: #17202a; }
+    .btn.danger { background: #fff0f3; color: var(--bad); border-color: #ffd3dc; }
+    .btn.small { padding: 7px 10px; font-size: 12px; }
+
+    .hidden { display: none !important; }
+
+    .footer-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 820px) {
+      header { grid-template-columns: 1fr; }
+      .card, .card.third { grid-column: 1 / -1; }
+      .form { grid-template-columns: 1fr; }
+      .item { grid-template-columns: auto 1fr; }
+      .item .time { grid-column: 2; justify-self: start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <section class="hero">
+        <h1>Bộ luật thói quen</h1>
+        <p class="subtitle">
+          Thiết kế theo 4 nguyên tắc: làm thói quen tốt rõ ràng, hấp dẫn, dễ dàng, thỏa mãn; làm thói quen xấu mờ đi, khó hơn, kém hấp dẫn, kém thỏa mãn.
+        </p>
+      </section>
+
+      <section class="panel today">
+        <div class="date" id="todayText">Hôm nay</div>
+        <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+        <div class="progress-text" id="progressText">0/0 việc đã xong</div>
+        <div class="footer-actions">
+          <button class="btn small" id="resetTodayBtn">Reset hôm nay</button>
+          <button class="btn small danger" id="clearDataBtn">Xóa dữ liệu</button>
+        </div>
+      </section>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="today">Hôm nay</button>
+      <button class="tab" data-tab="rules">Luật nếu-thì</button>
+      <button class="tab" data-tab="habits">Danh sách thói quen</button>
+      <button class="tab" data-tab="emergency">Ngày trầm / cắt cơn</button>
+    </nav>
+
+    <main>
+      <section id="tab-today" class="tab-panel grid">
+        <div class="card full">
+          <div class="section-title">
+            <h2>Checklist cả ngày</h2>
+            <span class="pill good">Thắng bằng việc nhỏ</span>
+          </div>
+          <div id="dailyList" class="list"></div>
+        </div>
+
+        <div class="card third">
+          <div class="section-title"><h2>Sáng</h2><span class="pill good">khởi động</span></div>
+          <div class="rule"><strong>Sau khi dậy 6h50</strong> → uống nước → dọn giường → vệ sinh → nấu cơm trưa → học ngoại ngữ → thay quần áo.</div>
+          <div class="rule"><strong>Cấm sáng:</strong> feed, Shorts, sex, thủ dâm, nằm học.</div>
+        </div>
+
+        <div class="card third">
+          <div class="section-title"><h2>Giữa ngày</h2><span class="pill warn">giữ nhịp</span></div>
+          <div class="rule"><strong>Sau 45 phút học/làm/lab</strong> → nghỉ 5–10 phút bằng đi lại, uống nước, rửa mặt, việc nhà.</div>
+          <div class="rule"><strong>Không nghỉ bằng:</strong> Facebook, Instagram, Threads, Shorts, porn, thủ dâm.</div>
+        </div>
+
+        <div class="card third">
+          <div class="section-title"><h2>Tối</h2><span class="pill neutral">thưởng nhẹ</span></div>
+          <div class="rule"><strong>Sau khi dọn bếp</strong> → làm lab 45 phút → đọc sách 10–20 phút → Oggy/truyện/phim có giới hạn.</div>
+          <div class="rule"><strong>Không thưởng bằng:</strong> porn, thủ dâm, Shorts, feed.</div>
+        </div>
+      </section>
+
+      <section id="tab-rules" class="tab-panel grid hidden">
+        <div class="card full">
+          <div class="section-title"><h2>Luật nếu-thì</h2><span class="pill good">implementation intention</span></div>
+          <div id="rulesList" class="list"></div>
+        </div>
+      </section>
+
+      <section id="tab-habits" class="tab-panel grid hidden">
+        <div class="card full">
+          <div class="section-title"><h2>Danh sách thói quen</h2><span class="pill warn">thêm/sửa được</span></div>
+          <div id="habitList" class="list"></div>
+          <form class="form" id="addHabitForm">
+            <input id="habitName" placeholder="Tên thói quen, ví dụ: lau bàn 5 phút" required />
+            <select id="habitType">
+              <option value="good">Tốt</option>
+              <option value="neutral">Trung tính/phần thưởng</option>
+              <option value="bad">Xấu/cần hạn chế</option>
+            </select>
+            <button class="btn primary" type="submit">Thêm</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="tab-emergency" class="tab-panel grid hidden">
+        <div class="card full">
+          <div class="section-title"><h2>Ngày trầm: bản tối thiểu</h2><span class="pill warn">không mất ngày</span></div>
+          <div class="quote">
+            Ngày tệ không cần thắng lớn. Chỉ cần không để ngày đó kéo mình xuống sâu hơn.
+            <small>Làm rất nhỏ, nhưng làm thật.</small>
+          </div>
+          <div id="minimumList" class="list" style="margin-top: 12px;"></div>
+        </div>
+
+        <div class="card full">
+          <div class="section-title"><h2>Cắt cơn dopamine mạnh</h2><span class="pill bad">không quyết định ngay</span></div>
+          <div class="rule"><strong>Khi muốn xem sex/thủ dâm/Shorts/feed:</strong> đứng dậy khỏi chỗ → rửa mặt → làm việc nhà 5 phút → quay lại làm 5 phút việc chính.</div>
+          <div class="rule"><strong>Việc nhà để reset:</strong> rửa bát, quét phòng, lau bàn, gấp quần áo, đổ rác, dọn giường, dọn bếp.</div>
+          <div class="rule"><strong>Nhớ:</strong> mục tiêu không phải không bao giờ ham muốn. Mục tiêu là không để nó phá học/lab/cả ngày.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "habit_rules_app_v1";
+
+    const defaultDaily = [
+      { id: "wake", time: "06:50", title: "Dậy + uống nước", sub: "Tắt báo thức, ngồi dậy, uống nước.", done: false },
+      { id: "bed", time: "sáng", title: "Dọn giường/gấp chăn 2 phút", sub: "Tạo tín hiệu ngày mới bắt đầu.", done: false },
+      { id: "cook-lunch", time: "sáng", title: "Nấu cơm cho buổi trưa", sub: "Được nghe nhạc khi nấu.", done: false },
+      { id: "language", time: "sáng", title: "Học ngoại ngữ", sub: "Mục tiêu chuẩn: 1 tiếng. Ngày yếu: 15 phút cũng tính giữ nhịp.", done: false },
+      { id: "clothes", time: "sáng", title: "Thay quần áo", sub: "Không nằm ì, chuyển sang mode làm việc.", done: false },
+      { id: "work", time: "ngày", title: "Học/làm/lab phiên chính", sub: "45 phút tập trung, nghỉ 5–10 phút không feed/Shorts.", done: false },
+      { id: "housework", time: "ngày", title: "Làm ít nhất 1 việc nhà", sub: "Vận động nhẹ + reset não: rửa bát, quét phòng, lau bàn, gấp đồ.", done: false },
+      { id: "self-study", time: "ngày", title: "Học bài tự làm trước khi hỏi AI", sub: "Tự làm 25 phút rồi mới hỏi AI dạng gợi ý.", done: false },
+      { id: "cook-dinner", time: "tối", title: "Nấu cơm tối + dọn bếp", sub: "Có thể nghe nhạc/gọi bố mẹ khi làm việc nhà.", done: false },
+      { id: "lab", time: "tối", title: "Làm lab 45 phút", sub: "Không cần solve ngay, chỉ cần tiến thêm một bước.", done: false },
+      { id: "read", time: "tối", title: "Đọc sách 10–20 phút", sub: "Ngày mệt: đọc 2 trang.", done: false },
+      { id: "family", time: "tối", title: "Gọi/nhắn mẹ hoặc bố", sub: "Một câu ngắn cũng được.", done: false }
+    ];
+
+    const defaultHabits = [
+      { name: "Dậy lúc 6h50", type: "good" },
+      { name: "Nấu cơm trưa/tối", type: "good" },
+      { name: "Học ngoại ngữ 1 tiếng", type: "good" },
+      { name: "Thay quần áo", type: "good" },
+      { name: "Ra ngoài / môi trường công ty giả", type: "good" },
+      { name: "Làm lab", type: "good" },
+      { name: "Đọc sách", type: "good" },
+      { name: "Gọi mẹ/bố", type: "good" },
+      { name: "Học bài tự làm", type: "good" },
+      { name: "Việc nhà / vận động nhẹ", type: "good" },
+      { name: "Uống nước cam", type: "neutral" },
+      { name: "Xem phim ngôn tình", type: "neutral" },
+      { name: "Đọc truyện tranh", type: "neutral" },
+      { name: "Xem Oggy", type: "neutral" },
+      { name: "Về quê", type: "neutral" },
+      { name: "Facebook / Instagram / Threads", type: "bad" },
+      { name: "YouTube Shorts", type: "bad" },
+      { name: "Nghe nhạc khi học sâu", type: "bad" },
+      { name: "Ăn ngoài quá nhiều", type: "bad" },
+      { name: "Ăn vặt khi học", type: "bad" },
+      { name: "Dùng AI làm hộ bài", type: "bad" },
+      { name: "Thủ dâm để né việc khó", type: "bad" },
+      { name: "Xem sex/porn", type: "bad" }
+    ];
+
+    const rules = [
+      ["Sau khi dậy lúc 6h50", "tôi sẽ uống nước và dọn giường 2 phút."],
+      ["Sau khi vệ sinh cá nhân", "tôi sẽ nấu cơm trưa."],
+      ["Sau khi nấu cơm trưa", "tôi sẽ học ngoại ngữ. Chuẩn 1 tiếng, ngày yếu 15 phút."],
+      ["Sau khi học ngoại ngữ", "tôi sẽ thay quần áo và bắt đầu ngày làm việc."],
+      ["Sau khi ngồi vào bàn", "tôi chỉ mở đúng tài liệu/lab/bài cần làm."],
+      ["Sau khi học/làm 45 phút", "tôi nghỉ 5–10 phút bằng đi lại, rửa mặt, uống nước hoặc việc nhà."],
+      ["Sau khi tự làm bài 25 phút mà vẫn kẹt", "tôi mới hỏi AI, chỉ hỏi gợi ý, không hỏi đáp án ngay."],
+      ["Sau khi muốn mở mạng xã hội", "tôi hỏi: ‘Tôi vào để làm gì?’ Không có mục đích thì không mở."],
+      ["Sau khi bí đầu hoặc thèm dopamine", "tôi làm việc nhà 5 phút rồi quay lại việc chính 5 phút."],
+      ["Sau khi muốn xem sex/thủ dâm", "tôi không quyết định ngay: ra khỏi phòng, rửa mặt, làm việc nhà 5 phút."],
+      ["Sau khi nấu cơm/rửa bát/dọn phòng", "tôi được nghe nhạc."],
+      ["Sau khi học/lab/đọc sách", "tôi không nghe nhạc có lời nếu cần tập trung sâu."],
+      ["Sau khi làm lab 45–60 phút", "tôi được xem Oggy 1 tập hoặc đọc truyện 10–15 phút."],
+      ["Sau khi đọc sách 10–20 phút", "tôi được giải trí nhẹ có giới hạn."],
+      ["Sau khi ăn tối", "tôi gọi/nhắn mẹ hoặc bố nếu tiện."],
+      ["Nếu trời quá nóng", "tôi tạo môi trường công ty giả ở nhà: điện thoại xa, ngồi bàn, chỉ mở tab học."],
+      ["Nếu ngày quá trầm", "tôi chỉ cần làm bản tối thiểu: rửa mặt, việc nhà 5 phút, học/lab 10 phút, ăn tử tế."]
+    ];
+
+    const minimum = [
+      "Dậy khỏi giường",
+      "Rửa mặt",
+      "Làm 1 việc nhà 5 phút",
+      "Ăn một bữa tử tế",
+      "Học/lab 10 phút",
+      "Không xem sex trước khi học",
+      "Không mở Shorts/feed trước 21h"
+    ];
+
+    let state = loadState();
+
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return { daily: defaultDaily, habits: defaultHabits, date: todayKey() };
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.date !== todayKey()) {
+          parsed.daily = defaultDaily.map(x => ({ ...x, done: false }));
+          parsed.date = todayKey();
+        }
+        return parsed;
+      } catch {
+        return { daily: defaultDaily, habits: defaultHabits, date: todayKey() };
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function todayKey() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    }
+
+    function renderDate() {
+      const d = new Date();
+      document.getElementById("todayText").textContent = d.toLocaleDateString("vi-VN", {
+        weekday: "long", year: "numeric", month: "long", day: "numeric"
+      });
+    }
+
+    function renderDaily() {
+      const wrap = document.getElementById("dailyList");
+      wrap.innerHTML = "";
+      state.daily.forEach(task => {
+        const div = document.createElement("div");
+        div.className = `item ${task.done ? "done" : ""}`;
+        div.innerHTML = `
+          <input type="checkbox" ${task.done ? "checked" : ""} aria-label="${task.title}" />
+          <div>
+            <div class="item-title">${task.title}</div>
+            <div class="item-sub">${task.sub}</div>
+          </div>
+          <span class="time">${task.time}</span>
+        `;
+        div.querySelector("input").addEventListener("change", e => {
+          task.done = e.target.checked;
+          saveState();
+          renderDaily();
+          renderProgress();
+        });
+        wrap.appendChild(div);
+      });
+    }
+
+    function renderProgress() {
+      const total = state.daily.length;
+      const done = state.daily.filter(x => x.done).length;
+      const percent = total ? Math.round(done / total * 100) : 0;
+      document.getElementById("progressBar").style.width = `${percent}%`;
+      document.getElementById("progressText").textContent = `${done}/${total} việc đã xong · ${percent}%`;
+    }
+
+    function renderRules() {
+      const wrap = document.getElementById("rulesList");
+      wrap.innerHTML = rules.map(([ifPart, thenPart]) => `
+        <div class="rule"><strong>${ifPart}</strong> → ${thenPart}</div>
+      `).join("");
+    }
+
+    function typeInfo(type) {
+      if (type === "good") return { cls: "good", label: "Tốt" };
+      if (type === "neutral") return { cls: "neutral", label: "Thưởng nhẹ" };
+      return { cls: "bad", label: "Cần hạn chế" };
+    }
+
+    function renderHabits() {
+      const wrap = document.getElementById("habitList");
+      wrap.innerHTML = "";
+      state.habits.forEach((habit, idx) => {
+        const info = typeInfo(habit.type);
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `
+          <div class="pill ${info.cls}">${info.label}</div>
+          <div>
+            <div class="item-title">${habit.name}</div>
+            <div class="item-sub">${habit.type === "good" ? "Làm rõ, làm dễ, làm thỏa mãn." : habit.type === "neutral" ? "Chỉ dùng sau việc tốt, có giới hạn." : "Ẩn đi, làm khó, không dùng làm thưởng."}</div>
+          </div>
+          <button class="btn small danger">Xóa</button>
+        `;
+        div.querySelector("button").addEventListener("click", () => {
+          state.habits.splice(idx, 1);
+          saveState();
+          renderHabits();
+        });
+        wrap.appendChild(div);
+      });
+    }
+
+    function renderMinimum() {
+      const wrap = document.getElementById("minimumList");
+      wrap.innerHTML = minimum.map((x, i) => `
+        <div class="item">
+          <div class="pill warn">${i + 1}</div>
+          <div><div class="item-title">${x}</div><div class="item-sub">Làm được là giữ nhịp, không cần hoàn hảo.</div></div>
+          <span class="time">min</span>
+        </div>
+      `).join("");
+    }
+
+    function bindTabs() {
+      document.querySelectorAll(".tab").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+          btn.classList.add("active");
+          document.querySelectorAll(".tab-panel").forEach(panel => panel.classList.add("hidden"));
+          document.getElementById(`tab-${btn.dataset.tab}`).classList.remove("hidden");
+        });
+      });
+    }
+
+    function bindActions() {
+      document.getElementById("resetTodayBtn").addEventListener("click", () => {
+        state.daily = defaultDaily.map(x => ({ ...x, done: false }));
+        state.date = todayKey();
+        saveState();
+        renderDaily();
+        renderProgress();
+      });
+
+      document.getElementById("clearDataBtn").addEventListener("click", () => {
+        if (!confirm("Xóa toàn bộ dữ liệu đã lưu trên trình duyệt này?")) return;
+        localStorage.removeItem(STORAGE_KEY);
+        state = loadState();
+        init();
+      });
+
+      document.getElementById("addHabitForm").addEventListener("submit", e => {
+        e.preventDefault();
+        const name = document.getElementById("habitName").value.trim();
+        const type = document.getElementById("habitType").value;
+        if (!name) return;
+        state.habits.push({ name, type });
+        document.getElementById("habitName").value = "";
+        saveState();
+        renderHabits();
+      });
+    }
+
+    function init() {
+      renderDate();
+      renderDaily();
+      renderProgress();
+      renderRules();
+      renderHabits();
+      renderMinimum();
+    }
+
+    bindTabs();
+    bindActions();
+    init();
+  </script>
+</body>
+</html>
