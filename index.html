@@ -821,17 +821,24 @@
     ];
 
     const rules = [
-      ["Sau khi dậy lúc 6h50", "uống nước và dọn giường 2 phút."],
-      ["Sau khi vệ sinh cá nhân", "nấu cơm trưa."],
-      ["Sau khi nấu cơm trưa", "học ngoại ngữ. Chuẩn 1 tiếng, ngày yếu 15 phút."],
-      ["Sau khi ngồi vào bàn", "chỉ mở đúng tài liệu/lab/bài cần làm."],
-      ["Sau 45 phút học/làm/lab", "nghỉ 5–10 phút bằng đi lại, rửa mặt, uống nước hoặc việc nhà."],
-      ["Khi muốn mở mạng xã hội", "hỏi: ‘Tôi vào để làm gì?’ Không rõ thì không mở."],
-      ["Khi bí đầu/thèm dopamine", "làm việc nhà 5 phút rồi quay lại việc chính 5 phút."],
-      ["Khi muốn xem sex/thủ dâm", "không quyết định ngay: ra khỏi phòng, rửa mặt, làm việc nhà 5 phút."],
-      ["Sau khi tự làm bài 25 phút mà vẫn kẹt", "mới hỏi AI, chỉ hỏi gợi ý."],
-      ["Nếu trời quá nóng", "tạo môi trường công ty giả: điện thoại xa, ngồi bàn, chỉ mở tab học."],
-      ["Nếu ngày quá trầm", "rửa mặt, làm 1 việc nhà 5 phút, học/lab 10 phút, ăn tử tế."]
+      { cue: "Sau khi dậy lúc 6h50", action: "uống nước", tail: "" },
+      { cue: "Sau khi uống nước", action: "dọn giường 2 phút", tail: "" },
+      { cue: "Sau khi vệ sinh cá nhân", action: "nấu cơm trưa", tail: "" },
+      { cue: "Sau khi nấu cơm trưa", action: "học ngoại ngữ 1 tiếng", tail: "" },
+      { cue: "Sau khi học ngoại ngữ", action: "thay quần áo", tail: "" },
+      { cue: "Sau khi thay quần áo", action: "ra ngoài hoặc ngồi vào bàn học/làm", tail: "" },
+      { cue: "Sau khi ngồi vào bàn", action: "mở đúng tài liệu/lab", tail: "" },
+      { cue: "Sau khi học/làm 45 phút", action: "nghỉ 5–10 phút bằng đi lại/việc nhà/rửa mặt", tail: "" },
+      { cue: "Sau khi ăn trưa", action: "nghỉ nhẹ", tail: ", không mở Shorts/feed" },
+      { cue: "Sau khi bí đầu", action: "làm việc nhà 5 phút", tail: "" },
+      { cue: "Sau khi muốn mở mạng xã hội", action: "hỏi “tôi vào để làm gì?”", tail: "" },
+      { cue: "Sau khi muốn xem sex/thủ dâm", action: "ra khỏi phòng, rửa mặt, làm việc nhà 5 phút", tail: "" },
+      { cue: "Sau khi kết thúc chiều", action: "làm 1 việc nhà nhỏ", tail: "" },
+      { cue: "Sau khi nấu cơm tối", action: "ăn và dọn bếp", tail: "" },
+      { cue: "Sau khi dọn bếp", action: "làm lab 45 phút", tail: "" },
+      { cue: "Sau khi làm lab", action: "đọc sách 10–20 phút", tail: "" },
+      { cue: "Sau khi đọc sách/làm lab xong", action: "xem Oggy/truyện/phim có giới hạn", tail: "" },
+      { cue: "Sau khi ăn tối hoặc trước ngủ", action: "gọi/nhắn bố mẹ", tail: " nếu tiện" }
     ];
 
     const minimum = [
@@ -933,8 +940,8 @@
     }
 
     function renderRules() {
-      document.getElementById("ruleList").innerHTML = rules.map(([a,b]) => `
-        <div class="rule"><strong>${a}</strong> → ${b}</div>
+      document.getElementById("ruleList").innerHTML = rules.map(rule => `
+        <div class="rule">${rule.cue}, tôi sẽ <strong>${rule.action}</strong>${rule.tail}.</div>
       `).join("");
     }
 
