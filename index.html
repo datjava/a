@@ -3,1033 +3,484 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Habit Rules</title>
+  <title>Habit Rules Checklist</title>
   <style>
     :root {
-      --accent: #4772fa;
-      --accent-soft: #edf2ff;
-      --accent-line: #dbe5ff;
-      --bg: #f7f8fa;
-      --surface: #ffffff;
-      --surface-2: #fbfbfc;
-      --text: #202124;
-      --muted: #777b86;
-      --line: #eceef2;
-      --line-strong: #dfe3ea;
-      --danger: #e05656;
-      --warning: #f2a93b;
-      --success: #22a06b;
-      --purple: #7c5cff;
-      --radius: 14px;
-      --shadow: 0 8px 26px rgba(17, 24, 39, 0.06);
-    }
+      --bg: #f3f6fb;
+      --card: #ffffff;
+      --text: #2d3553;
+      --title: #2e4fc7;
+      --muted: #7d86a8;
+      --line: #dfe5f2;
+      --accent: #4b6df0;
+      --radius: 6px;
+      --shadow: 0 4px 14px rgba(73, 91, 150, 0.08);
 
-    [data-theme="green"] {
-      --accent: #22a06b;
-      --accent-soft: #eaf8f1;
-      --accent-line: #cfecdd;
-    }
+      --aqua-bg: #eef6ff;
+      --aqua-line: #d8e8ff;
+      --aqua-text: #2e63c7;
 
-    [data-theme="red"] {
-      --accent: #e05656;
-      --accent-soft: #fff0f0;
-      --accent-line: #ffd8d8;
-    }
+      --teal-bg: #eaf9f8;
+      --teal-line: #cceeed;
+      --teal-text: #168b88;
 
-    [data-theme="orange"] {
-      --accent: #f09b2f;
-      --accent-soft: #fff5e7;
-      --accent-line: #ffe2b7;
-    }
+      --yellow-bg: #fff8df;
+      --yellow-line: #f4e5a8;
+      --yellow-text: #a97800;
 
-    [data-theme="purple"] {
-      --accent: #7c5cff;
-      --accent-soft: #f2efff;
-      --accent-line: #e2dbff;
-    }
-
-    [data-theme="dark"] {
-      --accent: #7aa2ff;
-      --accent-soft: #182238;
-      --accent-line: #263657;
-      --bg: #111318;
-      --surface: #191c22;
-      --surface-2: #15181e;
-      --text: #f3f4f6;
-      --muted: #a1a7b3;
-      --line: #282d36;
-      --line-strong: #363d49;
-      --shadow: 0 12px 34px rgba(0, 0, 0, 0.24);
+      --green-bg: #edf8ed;
+      --green-line: #d2ebd2;
+      --green-text: #2e8b45;
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
+      min-height: 100vh;
       background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif;
-      min-height: 100vh;
+      font-family: "Segoe UI", Inter, Arial, sans-serif;
     }
 
-    button, input, select {
-      font: inherit;
+    .page {
+      width: min(900px, calc(100% - 24px));
+      margin: 0 auto;
+      padding: 22px 0 40px;
     }
 
-    .app {
-      display: grid;
-      grid-template-columns: 280px minmax(0, 1fr);
-      min-height: 100vh;
+    .hero {
+      background: var(--aqua-bg);
+      border: 1px solid var(--aqua-line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 16px;
     }
 
-    .sidebar {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      background: var(--surface);
-      border-right: 1px solid var(--line);
-      padding: 18px 14px;
-      overflow: auto;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 10px 18px;
-    }
-
-    .logo {
-      width: 34px;
-      height: 34px;
-      display: grid;
-      place-items: center;
-      background: var(--accent);
-      color: white;
-      border-radius: 10px;
-      font-weight: 900;
-      box-shadow: 0 8px 18px color-mix(in srgb, var(--accent) 28%, transparent);
-    }
-
-    .brand-title {
-      font-weight: 800;
-      letter-spacing: -0.3px;
-      line-height: 1.1;
-    }
-
-    .brand-sub {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 2px;
-    }
-
-    .nav {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      margin-top: 4px;
-    }
-
-    .nav button {
-      border: 0;
-      background: transparent;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      text-align: left;
-      font-weight: 600;
-    }
-
-    .nav button:hover { background: var(--surface-2); }
-    .nav button.active {
-      background: var(--accent-soft);
-      color: var(--accent);
-    }
-
-    .nav-icon {
-      width: 20px;
-      display: inline-grid;
-      place-items: center;
-      font-size: 16px;
-    }
-
-    .sidebar-block {
-      margin: 18px 8px 0;
-      padding-top: 16px;
-      border-top: 1px solid var(--line);
-    }
-
-    .label {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 9px;
-    }
-
-    .theme-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-
-    .theme-dot {
-      border: 1px solid var(--line-strong);
-      background: var(--surface);
-      height: 36px;
-      border-radius: 10px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .theme-dot span {
-      width: 18px;
-      height: 18px;
-      border-radius: 999px;
-      display: block;
-    }
-
-    .theme-dot.active { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-    .main {
-      min-width: 0;
-      padding: 24px 28px 40px;
-    }
-
-    .topbar {
+    .hero-top {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       gap: 16px;
-      margin-bottom: 22px;
+      margin-bottom: 16px;
     }
 
-    .title h1 {
+    h1 {
       margin: 0;
-      font-size: 30px;
-      letter-spacing: -0.8px;
+      color: var(--aqua-text);
+      font-size: clamp(28px, 4vw, 40px);
       line-height: 1.1;
-    }
-
-    .title p {
-      margin: 7px 0 0;
-      color: var(--muted);
-      line-height: 1.5;
-      max-width: 720px;
-    }
-
-    .today-card {
-      min-width: 220px;
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 14px;
-      box-shadow: var(--shadow);
-    }
-
-    .today-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
-
-    .percent {
-      font-size: 28px;
-      font-weight: 900;
-      color: var(--accent);
-      letter-spacing: -0.8px;
-    }
-
-    .date {
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .progress {
-      height: 8px;
-      border-radius: 999px;
-      background: var(--surface-2);
-      border: 1px solid var(--line);
-      overflow: hidden;
-    }
-
-    .progress > div {
-      height: 100%;
-      width: 0%;
-      background: var(--accent);
-      border-radius: inherit;
-      transition: width 0.25s ease;
-    }
-
-    .muted { color: var(--muted); }
-
-    .section {
-      display: none;
-    }
-
-    .section.active {
-      display: block;
-      animation: fade 0.18s ease;
-    }
-
-    @keyframes fade {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .content-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 330px;
-      gap: 18px;
-      align-items: start;
-    }
-
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .panel-head {
-      padding: 16px 18px;
-      border-bottom: 1px solid var(--line);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .panel-head h2 {
-      margin: 0;
-      font-size: 18px;
-      letter-spacing: -0.3px;
-    }
-
-    .panel-body {
-      padding: 8px;
-    }
-
-    .group-title {
-      padding: 16px 12px 8px;
-      color: var(--muted);
-      font-size: 13px;
+      letter-spacing: 0.04em;
       font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
-    .task {
-      display: grid;
-      grid-template-columns: 32px minmax(0, 1fr) auto;
-      gap: 10px;
-      align-items: start;
-      padding: 12px;
-      border-radius: 12px;
-      cursor: pointer;
-      border: 1px solid transparent;
-    }
-
-    .task:hover {
-      background: var(--surface-2);
-      border-color: var(--line);
-    }
-
-    .check {
-      width: 22px;
-      height: 22px;
-      border-radius: 999px;
-      border: 2px solid var(--line-strong);
-      display: grid;
-      place-items: center;
-      color: white;
-      margin-top: 1px;
-      flex: 0 0 auto;
-    }
-
-    .task.done .check {
-      border-color: var(--accent);
-      background: var(--accent);
-    }
-
-    .task.done .task-title {
+    .sub {
+      margin-top: 8px;
       color: var(--muted);
-      text-decoration: line-through;
-    }
-
-    .task-title {
-      font-weight: 700;
-      line-height: 1.25;
-    }
-
-    .task-note {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
-      margin-top: 4px;
-    }
-
-    .time-badge {
-      white-space: nowrap;
-      font-size: 12px;
-      color: var(--muted);
-      border: 1px solid var(--line);
-      background: var(--surface-2);
-      border-radius: 999px;
-      padding: 4px 8px;
-      font-weight: 700;
-    }
-
-    .priority {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      display: inline-block;
-      margin-right: 8px;
-    }
-
-    .p1 { background: var(--danger); }
-    .p2 { background: var(--warning); }
-    .p3 { background: var(--accent); }
-
-    .side-note {
-      padding: 16px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .side-note:last-child { border-bottom: 0; }
-
-    .side-note h3 {
-      margin: 0 0 8px;
-      font-size: 15px;
-    }
-
-    .side-note p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.55;
       font-size: 14px;
+      font-weight: 600;
+      line-height: 1.5;
     }
 
-    .quote {
-      background: var(--accent-soft);
-      border: 1px solid var(--accent-line);
-      border-radius: 12px;
-      color: var(--text);
-      padding: 14px;
-      line-height: 1.55;
+    .status-box {
+      min-width: 118px;
+      background: var(--card);
+      border: 1px solid var(--aqua-line);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      text-align: right;
+    }
+
+    .status-box .small {
+      color: var(--muted);
+      font-size: 12px;
       font-weight: 700;
-    }
-
-    .rule-list, .habit-list, .minimum-list {
-      display: grid;
-      gap: 8px;
-      padding: 8px;
-    }
-
-    .rule {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 13px 14px;
-      line-height: 1.55;
-    }
-
-    .rule strong { color: var(--accent); }
-
-    .habit {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 10px;
-      padding: 13px 14px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: var(--surface);
-    }
-
-    .habit-name {
-      font-weight: 800;
       margin-bottom: 4px;
     }
 
-    .habit-rule {
+    .status-box .big {
+      color: var(--aqua-text);
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .progress-wrap {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .progress {
+      height: 10px;
+      border-radius: 4px;
+      background: #e7ecfb;
+      border: 1px solid var(--aqua-line);
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: var(--aqua-text);
+      transition: width 0.25s ease;
+    }
+
+    .progress-text {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .board {
+      display: grid;
+      gap: 16px;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .panel-head {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      background: var(--aqua-bg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 15px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    .panel[data-color="aqua"] h2 { color: var(--aqua-text); }
+    .panel[data-color="teal"] h2 { color: var(--teal-text); }
+    .panel[data-color="yellow"] h2 { color: var(--yellow-text); }
+    .panel[data-color="green"] h2 { color: var(--green-text); }
+
+    .color-picker {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .color-btn {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      border: 1px solid rgba(80, 90, 120, 0.2);
+      cursor: pointer;
+      padding: 0;
+      background: white;
+    }
+
+    .color-btn[data-color="aqua"] { background: var(--aqua-bg); }
+    .color-btn[data-color="teal"] { background: var(--teal-bg); }
+    .color-btn[data-color="yellow"] { background: var(--yellow-bg); }
+    .color-btn[data-color="green"] { background: var(--green-bg); }
+
+    .color-btn.active {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+    }
+
+    .color-btn[data-color="aqua"].active { color: var(--aqua-text); }
+    .color-btn[data-color="teal"].active { color: var(--teal-text); }
+    .color-btn[data-color="yellow"].active { color: var(--yellow-text); }
+    .color-btn[data-color="green"].active { color: var(--green-text); }
+
+    .item {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      padding: 16px 18px;
+      border-top: 1px solid var(--line);
+      background: var(--card);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .item:hover { background: #f7f9ff; }
+    .item:first-of-type { border-top: 0; }
+
+    .check {
+      width: 21px;
+      height: 21px;
+      border-radius: 4px;
+      border: 2px solid #cfd8fb;
+      background: #ffffff;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 13px;
+      font-weight: 900;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .item.done .check {
+      background: var(--aqua-text);
+      border-color: var(--aqua-text);
+    }
+
+    .rule {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .rule b {
+      color: var(--title);
+      font-weight: 800;
+    }
+
+    .note {
+      margin-top: 5px;
       color: var(--muted);
       font-size: 13px;
-      line-height: 1.45;
+      line-height: 1.5;
     }
 
-    .tag {
-      height: fit-content;
-      white-space: nowrap;
-      border-radius: 999px;
-      padding: 4px 9px;
-      font-size: 12px;
-      font-weight: 800;
-      border: 1px solid var(--line);
+    .item.done .rule {
+      color: #8991aa;
+      text-decoration: line-through;
+      text-decoration-thickness: 1.5px;
+      text-decoration-color: #b7bfdc;
     }
 
-    .tag.good { background: #eaf8f1; color: #168456; border-color: #cbeedc; }
-    .tag.reward { background: #f2efff; color: #6b4de6; border-color: #dfd8ff; }
-    .tag.bad { background: #fff5e7; color: #b46b12; border-color: #ffe0ae; }
-    .tag.danger { background: #fff0f0; color: #c33a3a; border-color: #ffd5d5; }
+    .item.done .note { color: #9da5bb; }
 
-    [data-theme="dark"] .tag.good { background: #10281d; color: #8ee6bb; border-color: #214d39; }
-    [data-theme="dark"] .tag.reward { background: #221b3d; color: #c0b2ff; border-color: #3a2f64; }
-    [data-theme="dark"] .tag.bad { background: #332313; color: #ffc574; border-color: #5b3d1d; }
-    [data-theme="dark"] .tag.danger { background: #351b1f; color: #ff9da7; border-color: #5c2a31; }
+    @media (max-width: 640px) {
+      .page {
+        width: 100%;
+        padding: 10px 0 28px;
+      }
 
-    .toolbar {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
+      .hero {
+        margin: 0 10px 14px;
+        padding: 15px;
+      }
 
-    .btn {
-      border: 1px solid var(--line-strong);
-      background: var(--surface);
-      color: var(--text);
-      border-radius: 10px;
-      padding: 9px 12px;
-      font-weight: 800;
-      cursor: pointer;
-    }
+      .hero-top {
+        flex-direction: column;
+        gap: 12px;
+      }
 
-    .btn:hover { background: var(--surface-2); }
-    .btn.primary {
-      background: var(--accent);
-      color: white;
-      border-color: var(--accent);
-    }
+      .status-box {
+        width: 100%;
+        text-align: left;
+      }
 
-    .add-form {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 150px auto;
-      gap: 8px;
-      padding: 12px;
-      border-top: 1px solid var(--line);
-      background: var(--surface-2);
-    }
+      .panel {
+        border-left: 0;
+        border-right: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
 
-    input, select {
-      border: 1px solid var(--line-strong);
-      background: var(--surface);
-      color: var(--text);
-      border-radius: 10px;
-      padding: 10px 12px;
-      outline: none;
-      min-width: 0;
-    }
+      .panel-head {
+        padding: 14px 16px;
+        align-items: flex-start;
+        flex-direction: column;
+      }
 
-    input:focus, select:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
-    }
+      .color-picker { gap: 8px; }
+      .color-btn { width: 24px; height: 24px; }
 
-    .delete {
-      border: 0;
-      background: transparent;
-      color: var(--muted);
-      cursor: pointer;
-      border-radius: 8px;
-      padding: 6px;
-    }
+      .item {
+        padding: 14px 16px;
+        grid-template-columns: 26px minmax(0, 1fr);
+        gap: 10px;
+      }
 
-    .delete:hover {
-      color: var(--danger);
-      background: color-mix(in srgb, var(--danger) 10%, transparent);
-    }
-
-    .empty {
-      color: var(--muted);
-      text-align: center;
-      padding: 24px 10px;
-    }
-
-    .mobile-top {
-      display: none;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: color-mix(in srgb, var(--surface) 92%, transparent);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--line);
-      padding: 10px 12px;
-    }
-
-    .mobile-tabs {
-      display: none;
-      position: fixed;
-      left: 10px;
-      right: 10px;
-      bottom: 10px;
-      z-index: 20;
-      background: var(--surface);
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow);
-      border-radius: 18px;
-      padding: 6px;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 4px;
-    }
-
-    .mobile-tabs button {
-      border: 0;
-      background: transparent;
-      color: var(--muted);
-      padding: 8px 4px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .mobile-tabs button.active {
-      background: var(--accent-soft);
-      color: var(--accent);
-    }
-
-    @media (max-width: 920px) {
-      .app { display: block; }
-      .sidebar { display: none; }
-      .mobile-top { display: flex; justify-content: space-between; align-items: center; }
-      .mobile-tabs { display: grid; }
-      .main { padding: 18px 12px 92px; }
-      .topbar { flex-direction: column; }
-      .today-card { width: 100%; }
-      .content-grid { grid-template-columns: 1fr; }
-      .add-form { grid-template-columns: 1fr; }
-      .task { grid-template-columns: 32px minmax(0, 1fr); }
-      .time-badge { grid-column: 2; justify-self: start; margin-top: 2px; }
+      .rule { font-size: 14px; }
+      .note { font-size: 12.5px; }
     }
   </style>
 </head>
 <body>
-  <div class="mobile-top">
-    <div class="brand" style="padding:0">
-      <div class="logo">✓</div>
-      <div>
-        <div class="brand-title">Habit Rules</div>
-        <div class="brand-sub">TickTick tone</div>
-      </div>
-    </div>
-    <select id="mobileTheme" aria-label="Chọn màu giao diện">
-      <option value="blue">Blue</option>
-      <option value="green">Green</option>
-      <option value="red">Red</option>
-      <option value="orange">Orange</option>
-      <option value="purple">Purple</option>
-      <option value="dark">Dark</option>
-    </select>
-  </div>
-
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="logo">✓</div>
+  <main class="page">
+    <section class="hero">
+      <div class="hero-top">
         <div>
-          <div class="brand-title">Habit Rules</div>
-          <div class="brand-sub">Checklist cá nhân</div>
+          <h1>Habit Rules</h1>
+          <div class="sub">Checklist tối giản · mặc định xanh nước · chọn màu cho từng thanh</div>
+        </div>
+
+        <div class="status-box">
+          <div class="small">Tiến độ</div>
+          <div class="big" id="percentText">0%</div>
         </div>
       </div>
 
-      <nav class="nav">
-        <button class="active" data-tab="today"><span class="nav-icon">☀️</span>Hôm nay</button>
-        <button data-tab="rules"><span class="nav-icon">🧠</span>Luật nếu-thì</button>
-        <button data-tab="habits"><span class="nav-icon">📋</span>Thói quen</button>
-        <button data-tab="low"><span class="nav-icon">🌙</span>Ngày trầm</button>
-      </nav>
-
-      <div class="sidebar-block">
-        <div class="label">Tone màu</div>
-        <div class="theme-grid">
-          <button class="theme-dot" data-theme-choice="blue" title="Blue"><span style="background:#4772fa"></span></button>
-          <button class="theme-dot" data-theme-choice="green" title="Green"><span style="background:#22a06b"></span></button>
-          <button class="theme-dot" data-theme-choice="red" title="Red"><span style="background:#e05656"></span></button>
-          <button class="theme-dot" data-theme-choice="orange" title="Orange"><span style="background:#f09b2f"></span></button>
-          <button class="theme-dot" data-theme-choice="purple" title="Purple"><span style="background:#7c5cff"></span></button>
-          <button class="theme-dot" data-theme-choice="dark" title="Dark"><span style="background:#111318; border:1px solid #555"></span></button>
-        </div>
+      <div class="progress-wrap">
+        <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+        <div class="progress-text" id="countText">0/0 đã tick</div>
       </div>
+    </section>
 
-      <div class="sidebar-block">
-        <div class="label">Nguyên tắc</div>
-        <div class="quote">
-          Thói quen tốt: làm rõ, làm dễ, làm thỏa mãn.<br><br>
-          Thói quen xấu: giấu đi, làm khó, không dùng làm phần thưởng.
-        </div>
-      </div>
-    </aside>
-
-    <main class="main">
-      <div class="topbar">
-        <div class="title">
-          <h1 id="pageTitle">Hôm nay</h1>
-          <p id="pageDesc">Checklist cả ngày, theo kiểu TickTick: rõ ràng, nhẹ mắt, dễ tick.</p>
-        </div>
-
-        <div class="today-card">
-          <div class="today-row">
-            <div>
-              <div class="date" id="dateText">Hôm nay</div>
-              <div class="muted" id="progressText" style="font-size:13px;font-weight:700">0/0 việc</div>
-            </div>
-            <div class="percent" id="percentText">0%</div>
-          </div>
-          <div class="progress"><div id="progressBar"></div></div>
-          <div class="toolbar" style="margin-top:12px">
-            <button class="btn" id="resetBtn">Reset</button>
-            <button class="btn primary" id="focusBtn">Bản tối thiểu</button>
-          </div>
-        </div>
-      </div>
-
-      <section id="today" class="section active">
-        <div class="content-grid">
-          <div class="panel">
-            <div class="panel-head">
-              <h2>Inbox hôm nay</h2>
-              <div class="muted" style="font-size:13px;font-weight:700">Tick xong là thắng nhỏ</div>
-            </div>
-            <div class="panel-body" id="taskList"></div>
-          </div>
-
-          <aside class="panel">
-            <div class="panel-head"><h2>Luật bảo vệ</h2></div>
-            <div class="side-note">
-              <h3>Buổi sáng</h3>
-              <p>Không Facebook, Instagram, Threads, Shorts, sex, thủ dâm, nằm học.</p>
-            </div>
-            <div class="side-note">
-              <h3>Giờ nghỉ</h3>
-              <p>Nghỉ bằng đi lại, uống nước, rửa mặt, việc nhà. Không nghỉ bằng feed/Shorts/porn.</p>
-            </div>
-            <div class="side-note">
-              <h3>Phần thưởng nhẹ</h3>
-              <p>Sau lab/học: Oggy 1 tập, truyện 10–15 phút, phim 20–30 phút.</p>
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <section id="rules" class="section">
-        <div class="panel">
-          <div class="panel-head"><h2>Luật nếu-thì</h2></div>
-          <div class="rule-list" id="ruleList"></div>
-        </div>
-      </section>
-
-      <section id="habits" class="section">
-        <div class="panel">
-          <div class="panel-head">
-            <h2>Danh sách thói quen</h2>
-            <div class="muted" style="font-size:13px;font-weight:700">Thêm/xóa được</div>
-          </div>
-          <div class="habit-list" id="habitList"></div>
-          <form class="add-form" id="addHabitForm">
-            <input id="habitInput" placeholder="Thêm thói quen mới..." />
-            <select id="habitType">
-              <option value="good">Tốt</option>
-              <option value="reward">Thưởng nhẹ</option>
-              <option value="bad">Cần hạn chế</option>
-              <option value="danger">Cám dỗ mạnh</option>
-            </select>
-            <button class="btn primary" type="submit">+ Thêm</button>
-          </form>
-        </div>
-      </section>
-
-      <section id="low" class="section">
-        <div class="content-grid">
-          <div class="panel">
-            <div class="panel-head"><h2>Ngày trầm: bản tối thiểu</h2></div>
-            <div class="minimum-list" id="minimumList"></div>
-          </div>
-          <aside class="panel">
-            <div class="panel-head"><h2>Cắt cơn</h2></div>
-            <div class="side-note">
-              <h3>Khi muốn sex/thủ dâm/Shorts/feed</h3>
-              <p>Không quyết định ngay. Đứng dậy khỏi chỗ → rửa mặt → làm việc nhà 5 phút → quay lại làm 5 phút việc chính.</p>
-            </div>
-            <div class="side-note">
-              <h3>Việc nhà hợp lệ</h3>
-              <p>Rửa bát, quét phòng, lau bàn, gấp quần áo, đổ rác, dọn giường, dọn bếp.</p>
-            </div>
-            <div class="side-note">
-              <h3>Mục tiêu</h3>
-              <p>Không phải không bao giờ ham muốn. Mục tiêu là không để nó phá học/lab/cả ngày.</p>
-            </div>
-          </aside>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <div class="mobile-tabs">
-    <button class="active" data-tab="today">☀️<br>Hôm nay</button>
-    <button data-tab="rules">🧠<br>Luật</button>
-    <button data-tab="habits">📋<br>List</button>
-    <button data-tab="low">🌙<br>Trầm</button>
-  </div>
+    <section class="board" id="board"></section>
+  </main>
 
   <script>
-    const STORAGE_KEY = "habit_rules_ticktick_html_v1";
+    const STORAGE_KEY = "habit_rules_minimal_color_bars_v2";
+    const COLORS = ["aqua", "teal", "yellow", "green"];
 
-    const tasks = [
-      { id: "wake", area: "Sáng", time: "06:50", title: "Dậy + uống nước", note: "Không mở feed. Ngồi dậy rồi uống nước.", priority: "p1" },
-      { id: "bed", area: "Sáng", time: "2 phút", title: "Dọn giường / gấp chăn", note: "Tín hiệu: ngày mới bắt đầu.", priority: "p3" },
-      { id: "cook_lunch", area: "Sáng", time: "Sáng", title: "Nấu cơm trưa", note: "Được nghe nhạc khi nấu.", priority: "p2" },
-      { id: "language", area: "Sáng", time: "1h", title: "Học ngoại ngữ", note: "Ngày yếu: 15 phút vẫn tính giữ nhịp.", priority: "p1" },
-      { id: "clothes", area: "Sáng", time: "Sáng", title: "Thay quần áo", note: "Chuyển sang mode làm việc, không nằm ì.", priority: "p3" },
-      { id: "focus", area: "Trong ngày", time: "45m", title: "Học / làm / lab phiên chính", note: "Nghỉ bằng đi lại, rửa mặt, uống nước, việc nhà.", priority: "p1" },
-      { id: "housework", area: "Trong ngày", time: "5m", title: "Làm ít nhất 1 việc nhà", note: "Rửa bát, quét phòng, lau bàn, gấp đồ. Đây là vận động nhẹ.", priority: "p1" },
-      { id: "self_study", area: "Trong ngày", time: "25m", title: "Tự làm bài trước khi hỏi AI", note: "Chỉ hỏi AI dạng gợi ý sau khi tự làm.", priority: "p2" },
-      { id: "cook_dinner", area: "Tối", time: "Tối", title: "Nấu cơm tối + dọn bếp", note: "Có thể nghe nhạc hoặc gọi bố/mẹ.", priority: "p2" },
-      { id: "lab", area: "Tối", time: "45m", title: "Làm lab", note: "Không cần solve ngay, chỉ cần tiến thêm một bước.", priority: "p1" },
-      { id: "read", area: "Tối", time: "10–20m", title: "Đọc sách", note: "Ngày mệt: đọc 2 trang.", priority: "p2" },
-      { id: "family", area: "Tối", time: "Tối", title: "Gọi / nhắn mẹ hoặc bố", note: "Một câu ngắn cũng được.", priority: "p3" }
+    const groups = [
+      {
+        title: "Hệ thống quy tắc thói quen",
+        items: [
+          { text: "Sau khi dậy lúc 6h50, tôi sẽ <b>nấu cơm cho buổi trưa</b>.", note: "Khi làm xong, tôi được uống nước cam hoặc nghe 1 bài nhạc trước khi học ngoại ngữ." },
+          { text: "Sau khi nấu cơm cho buổi trưa, tôi sẽ <b>học ngoại ngữ 1 tiếng</b>.", note: "Khi làm xong, tôi được nghỉ 5–10 phút, uống nước cam, hoặc nghe nhạc khi thay đồ / đi đường." },
+          { text: "Sau khi học ngoại ngữ 1 tiếng, tôi sẽ <b>thay quần áo</b>.", note: "Khi làm xong, tôi được ra ngoài nếu thời tiết ổn; nếu trời nóng, tôi ngồi vào bàn học/làm ở nhà." },
+          { text: "Sau khi ra ngoài hoặc ngồi vào bàn học/làm, tôi sẽ <b>học bài tự làm</b>.", note: "Khi làm xong ít nhất 25 phút, tôi được dùng AI hỗ trợ gợi ý hướng đi. AI không làm hộ ngay." },
+          { text: "Sau khi học/làm 45 phút, tôi sẽ <b>nghỉ 5–10 phút bằng đi lại, rửa mặt, uống nước hoặc làm việc nhà</b>.", note: "Khi nghỉ xong, tôi quay lại làm tiếp 1 phiên nhỏ 10–25 phút." },
+          { text: "Sau khi ăn trưa, tôi sẽ <b>nghỉ nhẹ</b>.", note: "Tôi được đi lại, uống nước, nằm nghỉ ngắn không điện thoại. Tôi không mở Shorts/feed sau ăn trưa." },
+          { text: "Sau khi đi học/làm về, tôi sẽ <b>nấu cơm tối</b>.", note: "Khi làm xong, tôi được ăn tử tế và nghe nhạc nếu muốn." },
+          { text: "Sau khi ăn tối, tôi sẽ <b>dọn bếp / rửa bát</b>.", note: "Khi làm xong, tôi được nghỉ 10 phút trước khi làm lab." },
+          { text: "Sau khi dọn bếp, tôi sẽ <b>làm lab 45 phút</b>.", note: "Khi làm xong, tôi được đọc sách 10–20 phút hoặc nghỉ nhẹ 5 phút." },
+          { text: "Sau khi làm lab, tôi sẽ <b>đọc sách</b>.", note: "Khi làm xong, tôi được gọi/nhắn bố mẹ nếu tiện." },
+          { text: "Sau khi gọi/nhắn bố mẹ, tôi sẽ <b>reset cuối ngày</b>.", note: "Reset gồm: tick checklist, dọn bàn 2 phút, chuẩn bị đồ/ngày mai." },
+          { text: "Sau khi làm xong việc chính và reset cuối ngày, tôi được <b>thưởng giải trí có giới hạn</b>.", note: "Chọn 1: xem Oggy 1 tập, đọc truyện tranh 10–15 phút, hoặc xem phim ngôn tình 20–30 phút." }
+        ]
+      },
+      {
+        title: "Luật cắt cơn & phản xạ",
+        items: [
+          { text: "Khi thèm mở mạng xã hội như Facebook / Instagram / Threads / YouTube Shorts, tôi sẽ <b>tắt máy hoặc đóng app ngay lập tức</b>.", note: "Khi đóng được app, tôi được tick 1 điểm tự chủ và quay lại làm việc trong không gian tập trung." },
+          { text: "Khi muốn mở mạng xã hội, tôi sẽ <b>hỏi: “Tôi vào để làm gì?”</b>.", note: "Nếu không trả lời được mục đích rõ ràng, tôi không mở." },
+          { text: "Khi bí đầu, tôi sẽ <b>làm việc nhà 5 phút</b>.", note: "Rửa bát, lau bàn, quét phòng, gấp quần áo, đổ rác hoặc dọn giường. Xong thì uống nước/rửa mặt/nghỉ 2 phút rồi quay lại làm 5–10 phút việc chính." },
+          { text: "Khi thèm xem sex / thủ dâm lúc gặp bài khó, tôi sẽ <b>đứng dậy rời bàn học, rửa mặt nước lạnh và làm việc nhà 5 phút</b>.", note: "Khi làm xong, tôi được nạp lại năng lượng bằng uống nước/nước cam/nghỉ 2 phút, rồi quay lại xử lý lab hoặc bài tập thêm 5 phút." },
+          { text: "Khi muốn ăn vặt trong lúc học, tôi sẽ <b>uống nước trước và làm tiếp 10 phút</b>.", note: "Sau đó mới quyết định có ăn hay không. Ăn vặt không được đặt trên bàn học." },
+          { text: "Khi muốn nghe nhạc trong lúc học/làm lab/đọc sách, tôi sẽ <b>đổi sang im lặng, tiếng mưa hoặc white noise</b>.", note: "Tôi chỉ nghe nhạc khi nấu cơm, dọn phòng, rửa bát, đi đường hoặc tắm." }
+        ]
+      },
+      {
+        title: "Luật thưởng",
+        items: [
+          { text: "Phần thưởng hợp lệ: <b>uống nước cam, nghe 1 bài nhạc, nghỉ 5–10 phút, Oggy 1 tập, truyện tranh 10–15 phút, phim ngôn tình 20–30 phút, gọi/nhắn bố mẹ, tick checklist</b>.", note: "Phần thưởng phải có điểm dừng rõ." },
+          { text: "Phần thưởng không hợp lệ: <b>xem sex/porn, thủ dâm, lướt Facebook/Instagram/Threads, YouTube Shorts, lướt feed vô thức, dùng AI làm hộ bài ngay từ đầu</b>.", note: "Mấy thứ này không dùng làm thưởng vì dễ phá cả ngày." },
+          { text: "Nếu hôm đó là ngày trầm / mệt / nóng / không có sức, tôi chỉ cần làm <b>bản tối thiểu</b>.", note: "Dậy khỏi giường, rửa mặt, làm 1 việc nhà 5 phút, ăn một bữa tử tế, học/lab 10 phút, không xem sex trước khi học, không mở Shorts/feed trước 21h." }
+        ]
+      }
     ];
 
-    const defaultHabits = [
-      { name: "Dậy lúc 6h50", type: "good", rule: "Để nước cạnh giường, báo thức xa tay." },
-      { name: "Nấu cơm trưa/tối", type: "good", rule: "Được nghe nhạc khi nấu/dọn." },
-      { name: "Học ngoại ngữ 1 tiếng", type: "good", rule: "Làm trước mạng xã hội. Ngày yếu 15 phút." },
-      { name: "Làm lab", type: "good", rule: "Sau ăn tối/dọn bếp, làm 45 phút." },
-      { name: "Việc nhà / vận động nhẹ", type: "good", rule: "Khi bí đầu hoặc thèm dopamine, làm 5 phút." },
-      { name: "Oggy", type: "reward", rule: "Sau lab 45–60 phút: được xem 1 tập." },
-      { name: "Truyện tranh", type: "reward", rule: "Sau tự học 60 phút: đọc 10–15 phút." },
-      { name: "Phim ngôn tình", type: "reward", rule: "Sau việc chính buổi tối: xem 20–30 phút." },
-      { name: "Facebook / Instagram / Threads", type: "bad", rule: "Không feed, không story, không profile người khác." },
-      { name: "YouTube Shorts", type: "bad", rule: "Không dùng trước 21h. Tốt nhất bỏ hẳn." },
-      { name: "Nghe nhạc khi học sâu", type: "bad", rule: "Không nhạc có lời khi học/lab/đọc sách." },
-      { name: "Dùng AI làm hộ bài", type: "bad", rule: "Tự làm 25 phút trước, chỉ hỏi gợi ý." },
-      { name: "Xem sex / porn", type: "danger", rule: "Không dùng làm phần thưởng. Muốn xem thì rời phòng, rửa mặt, việc nhà 5 phút." },
-      { name: "Thủ dâm để né việc khó", type: "danger", rule: "Không trước giờ học, không trong giờ nghỉ, không khi stress/buồn/cô đơn." }
-    ];
+    let state = loadState();
 
-    const rules = [
-      { cue: "Sau khi dậy lúc 6h50", action: "uống nước", tail: "" },
-      { cue: "Sau khi uống nước", action: "dọn giường 2 phút", tail: "" },
-      { cue: "Sau khi vệ sinh cá nhân", action: "nấu cơm trưa", tail: "" },
-      { cue: "Sau khi nấu cơm trưa", action: "học ngoại ngữ 1 tiếng", tail: "" },
-      { cue: "Sau khi học ngoại ngữ", action: "thay quần áo", tail: "" },
-      { cue: "Sau khi thay quần áo", action: "ra ngoài hoặc ngồi vào bàn học/làm", tail: "" },
-      { cue: "Sau khi ngồi vào bàn", action: "mở đúng tài liệu/lab", tail: "" },
-      { cue: "Sau khi học/làm 45 phút", action: "nghỉ 5–10 phút bằng đi lại/việc nhà/rửa mặt", tail: "" },
-      { cue: "Sau khi ăn trưa", action: "nghỉ nhẹ", tail: ", không mở Shorts/feed" },
-      { cue: "Sau khi bí đầu", action: "làm việc nhà 5 phút", tail: "" },
-      { cue: "Sau khi muốn mở mạng xã hội", action: "hỏi “tôi vào để làm gì?”", tail: "" },
-      { cue: "Sau khi muốn xem sex/thủ dâm", action: "ra khỏi phòng, rửa mặt, làm việc nhà 5 phút", tail: "" },
-      { cue: "Sau khi kết thúc chiều", action: "làm 1 việc nhà nhỏ", tail: "" },
-      { cue: "Sau khi nấu cơm tối", action: "ăn và dọn bếp", tail: "" },
-      { cue: "Sau khi dọn bếp", action: "làm lab 45 phút", tail: "" },
-      { cue: "Sau khi làm lab", action: "đọc sách 10–20 phút", tail: "" },
-      { cue: "Sau khi đọc sách/làm lab xong", action: "xem Oggy/truyện/phim có giới hạn", tail: "" },
-      { cue: "Sau khi ăn tối hoặc trước ngủ", action: "gọi/nhắn bố mẹ", tail: " nếu tiện" }
-    ];
-
-    const minimum = [
-      "Dậy khỏi giường",
-      "Rửa mặt",
-      "Làm 1 việc nhà 5 phút",
-      "Ăn một bữa tử tế",
-      "Học/lab 10 phút",
-      "Không xem sex trước khi học",
-      "Không mở Shorts/feed trước 21h"
-    ];
-
-    const pageMeta = {
-      today: ["Hôm nay", "Checklist cả ngày, theo kiểu TickTick: rõ ràng, nhẹ mắt, dễ tick."],
-      rules: ["Luật nếu-thì", "Các chuỗi hành vi để khỏi phải thương lượng với bản thân."],
-      habits: ["Thói quen", "Tốt thì làm dễ hơn. Xấu thì làm khó hơn."],
-      low: ["Ngày trầm", "Bản tối thiểu để không mất ngày."],
-    };
-
-    function todayKey() {
-      const d = new Date();
-      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-    }
-
-    function load() {
+    function loadState() {
       try {
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-        if (!saved) throw new Error("empty");
-        if (saved.date !== todayKey()) saved.done = {};
-        saved.date = todayKey();
-        if (!saved.habits) saved.habits = defaultHabits;
-        if (!saved.theme) saved.theme = "blue";
-        return saved;
+        if (!saved || !saved.done) throw new Error("empty");
+        return {
+          done: saved.done || {},
+          colors: saved.colors || {}
+        };
       } catch {
-        return { date: todayKey(), done: {}, habits: defaultHabits, theme: "blue" };
+        return { done: {}, colors: {} };
       }
     }
 
-    let state = load();
-
-    function save() {
+    function saveState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }
 
-    function setTheme(theme) {
-      state.theme = theme;
-      save();
-      document.documentElement.dataset.theme = theme;
-      document.querySelectorAll(".theme-dot").forEach(btn => btn.classList.toggle("active", btn.dataset.themeChoice === theme));
-      const mobile = document.getElementById("mobileTheme");
-      if (mobile) mobile.value = theme;
+    function flatItems() {
+      return groups.flatMap((group, gi) => group.items.map((item, ii) => ({ ...item, id: `${gi}-${ii}` })));
     }
 
-    function renderDate() {
-      const d = new Date();
-      document.getElementById("dateText").textContent = d.toLocaleDateString("vi-VN", { weekday: "short", day: "2-digit", month: "2-digit" });
+    function colorPicker(groupIndex, activeColor) {
+      return `
+        <div class="color-picker" aria-label="Chọn màu thanh">
+          ${COLORS.map(color => `
+            <button
+              class="color-btn ${activeColor === color ? "active" : ""}"
+              data-group-color="${groupIndex}"
+              data-color="${color}"
+              title="${color}"
+              aria-label="Chọn màu ${color}"
+            ></button>
+          `).join("")}
+        </div>
+      `;
     }
 
-    function renderTasks() {
-      const wrap = document.getElementById("taskList");
-      const groups = tasks.reduce((acc, task) => {
-        acc[task.area] ||= [];
-        acc[task.area].push(task);
-        return acc;
-      }, {});
-
-      wrap.innerHTML = Object.entries(groups).map(([area, list]) => `
-        <div class="group-title"><span>${area === "Sáng" ? "☀️" : area === "Tối" ? "🌙" : "📌"}</span>${area}</div>
-        ${list.map(task => `
-          <div class="task ${state.done[task.id] ? "done" : ""}" data-task="${task.id}">
-            <div class="check">${state.done[task.id] ? "✓" : ""}</div>
-            <div>
-              <div class="task-title"><span class="priority ${task.priority}"></span>${task.title}</div>
-              <div class="task-note">${task.note}</div>
+    function render() {
+      const board = document.getElementById("board");
+      board.innerHTML = groups.map((group, gi) => {
+        const color = state.colors[gi] || "aqua";
+        return `
+          <section class="panel" data-color="${color}">
+            <div class="panel-head">
+              <h2>${group.title}</h2>
+              ${colorPicker(gi, color)}
             </div>
-            <div class="time-badge">${task.time}</div>
-          </div>
-        `).join("")}
-      `).join("");
+            ${group.items.map((item, ii) => {
+              const id = `${gi}-${ii}`;
+              const done = !!state.done[id];
+              return `
+                <div class="item ${done ? "done" : ""}" data-id="${id}">
+                  <div class="check">${done ? "✓" : ""}</div>
+                  <div>
+                    <div class="rule">${item.text}</div>
+                    <div class="note">${item.note}</div>
+                  </div>
+                </div>
+              `;
+            }).join("")}
+          </section>
+        `;
+      }).join("");
 
-      document.querySelectorAll("[data-task]").forEach(el => {
+      document.querySelectorAll(".item").forEach(el => {
         el.addEventListener("click", () => {
-          const id = el.dataset.task;
+          const id = el.dataset.id;
           state.done[id] = !state.done[id];
-          save();
-          renderTasks();
-          renderProgress();
+          saveState();
+          render();
         });
       });
+
+      document.querySelectorAll("[data-group-color]").forEach(btn => {
+        btn.addEventListener("click", event => {
+          event.stopPropagation();
+          const groupIndex = btn.dataset.groupColor;
+          const color = btn.dataset.color;
+          state.colors[groupIndex] = color;
+          saveState();
+          render();
+        });
+      });
+
+      renderProgress();
     }
 
     function renderProgress() {
-      const total = tasks.length;
-      const done = tasks.filter(t => state.done[t.id]).length;
-      const percent = Math.round(done / total * 100);
-      document.getElementById("percentText").textContent = percent + "%";
-      document.getElementById("progressText").textContent = `${done}/${total} việc`;
-      document.getElementById("progressBar").style.width = percent + "%";
+      const all = flatItems();
+      const done = all.filter(item => state.done[item.id]).length;
+      const total = all.length;
+      const percent = total ? Math.round(done / total * 100) : 0;
+      document.getElementById("countText").textContent = `${done}/${total} đã tick`;
+      document.getElementById("percentText").textContent = `${percent}%`;
+      document.getElementById("progressBar").style.width = `${percent}%`;
     }
 
-    function renderRules() {
-      document.getElementById("ruleList").innerHTML = rules.map(rule => `
-        <div class="rule">${rule.cue}, tôi sẽ <strong>${rule.action}</strong>${rule.tail}.</div>
-      `).join("");
-    }
-
-    function tagLabel(type) {
-      return type === "good" ? "Tốt" : type === "reward" ? "Thưởng" : type === "danger" ? "Cám dỗ mạnh" : "Hạn chế";
-    }
-
-    function renderHabits() {
-      const wrap = document.getElementById("habitList");
-      if (!state.habits.length) {
-        wrap.innerHTML = `<div class="empty">Chưa có thói quen nào.</div>`;
-        return;
-      }
-      wrap.innerHTML = state.habits.map((h, i) => `
-        <div class="habit">
-          <div>
-            <div class="habit-name">${h.name}</div>
-            <div class="habit-rule">${h.rule || "Tự đặt luật nếu-thì cho thói quen này."}</div>
-          </div>
-          <div style="display:flex;gap:6px;align-items:start">
-            <span class="tag ${h.type}">${tagLabel(h.type)}</span>
-            <button class="delete" data-delete="${i}" title="Xóa">✕</button>
-          </div>
-        </div>
-      `).join("");
-      document.querySelectorAll("[data-delete]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          state.habits.splice(Number(btn.dataset.delete), 1);
-          save();
-          renderHabits();
-        });
-      });
-    }
-
-    function renderMinimum() {
-      document.getElementById("minimumList").innerHTML = minimum.map((x, i) => `
-        <div class="rule"><strong>${i + 1}.</strong> ${x}</div>
-      `).join("");
-    }
-
-    function switchTab(tab) {
-      document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
-      document.getElementById(tab).classList.add("active");
-
-      document.querySelectorAll("[data-tab]").forEach(btn => btn.classList.toggle("active", btn.dataset.tab === tab));
-      document.getElementById("pageTitle").textContent = pageMeta[tab][0];
-      document.getElementById("pageDesc").textContent = pageMeta[tab][1];
-    }
-
-    function bind() {
-      document.querySelectorAll("[data-tab]").forEach(btn => btn.addEventListener("click", () => switchTab(btn.dataset.tab)));
-      document.querySelectorAll("[data-theme-choice]").forEach(btn => btn.addEventListener("click", () => setTheme(btn.dataset.themeChoice)));
-      document.getElementById("mobileTheme").addEventListener("change", e => setTheme(e.target.value));
-
-      document.getElementById("resetBtn").addEventListener("click", () => {
-        state.done = {};
-        save();
-        renderTasks();
-        renderProgress();
-      });
-
-      document.getElementById("focusBtn").addEventListener("click", () => switchTab("low"));
-
-      document.getElementById("addHabitForm").addEventListener("submit", e => {
-        e.preventDefault();
-        const input = document.getElementById("habitInput");
-        const type = document.getElementById("habitType").value;
-        const name = input.value.trim();
-        if (!name) return;
-        state.habits.push({ name, type, rule: "Tự đặt luật nếu-thì cho thói quen này." });
-        input.value = "";
-        save();
-        renderHabits();
-      });
-    }
-
-    function init() {
-      setTheme(state.theme || "blue");
-      renderDate();
-      renderTasks();
-      renderProgress();
-      renderRules();
-      renderHabits();
-      renderMinimum();
-      bind();
-    }
-
-    init();
+    render();
   </script>
 </body>
 </html>
